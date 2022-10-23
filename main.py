@@ -16,8 +16,9 @@ list_of_end_users = []
 fogNodes = []
 transactions_list = []
 list_of_authorized_miners = []
-blockchainFunction = 0
-blockchainPlacement = 0
+blockchainFunction = data["blockchainFunction"]
+blockchainPlacement = data["blockchainPlacement"]
+type_of_consensus = data["consensusAlgorithm"]
 number_of_miner_neighbours = data["number_of_each_miner_neighbours"]
 NumOfFogNodes = data["NumOfFogNodes"]
 NumOfTaskPerUser = data["NumOfTaskPerUser"]
@@ -36,37 +37,12 @@ delay_between_end_users = data["delay_between_end_users"]
 poet_block_time = data['poet_block_time']
 Asymmetric_key_length = data['Asymmetric_key_length']
 number_of_DPoS_delegates = data['Num_of_DPoS_delegates']
-user_informed = False
+user_informed = True
 
 
-def user_input():
+def initiate_files():
     modification.initiate_files(gossip_activated)
-    choose_functionality()
-    choose_placement()
-
-
-def choose_functionality():
-    while True:
-        output.choose_functionality()
-        global blockchainFunction
-        blockchainFunction = input()
-        if blockchainFunction in blockchain_functions:
-            blockchainFunction = int(blockchainFunction)
-            break
-        else:
-            print("Input is incorrect, try again..!")
-
-
-def choose_placement():
-    while True:
-        output.choose_placement()
-        global blockchainPlacement
-        blockchainPlacement = input()
-        if blockchainPlacement in blockchain_placement_options:
-            blockchainPlacement = int(blockchainPlacement)
-            break
-        else:
-            print("Input is incorrect, try again..!")
+    new_consensus_module.prepare_necessary_files(type_of_consensus)
 
 
 def initiate_network():
@@ -169,7 +145,8 @@ def create_components(miners_list):
 
 def give_miners_authorization(the_miners_list, the_type_of_consensus):
     if the_type_of_consensus == 1:
-        wanted, float_portion = output.AI_assisted_mining_wanted()
+        wanted = data["aiAssistedMining?"]
+        float_portion = data["aiAssistedMinersPercentage"] / 100
         if wanted:
             num_of_miners_requested_to_use_AI = ceil(float_portion * len(the_miners_list))
             num_of_miners_instructed_to_use_AI = 0
@@ -239,9 +216,8 @@ def inform_miners_of_users_wallets():
 
 
 if __name__ == '__main__':
-    user_input()
+    initiate_files()
     initiate_network()
-    type_of_consensus = new_consensus_module.choose_consensus()
     trans_delay = define_trans_delay(blockchainPlacement)
     miner_list = initiate_miners()
     AI_assisted_mining_wanted = give_miners_authorization(miner_list, type_of_consensus)

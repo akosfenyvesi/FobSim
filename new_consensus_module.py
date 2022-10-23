@@ -311,7 +311,7 @@ blockchain_CAs = {'1': 'Proof of Work (PoW)',
 # project to utilize already implemented functions
 
 
-def prepare_necessary_files():
+def prepare_necessary_files(num_of_consensus=num_of_consensus):
     if num_of_consensus in [2, 5]:
         modification.write_file('temporary/miners_stake_amounts.json', {})
     if num_of_consensus == 6:
