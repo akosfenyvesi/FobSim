@@ -8,9 +8,10 @@ from math import ceil
 import time
 import modification
 import new_consensus_module
+import os
 
 
-data = modification.read_file("Sim_parameters.json")
+data = modification.read_file(os.path.join(os.path.dirname(__file__), "Sim_parameters.json"))
 list_of_end_users = []
 fogNodes = []
 transactions_list = []

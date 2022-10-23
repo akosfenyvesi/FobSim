@@ -4,7 +4,7 @@ import random
 import output
 import modification
 
-data = modification.read_file("Sim_parameters.json")
+data = modification.read_file(os.path.join(os.path.dirname(__file__), "Sim_parameters.json"))
 diff = data["puzzle_difficulty"] * 4
 target = 2 ** (256 - diff)
 list_of_stakes = [['Network', 0]]

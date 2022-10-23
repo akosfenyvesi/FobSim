@@ -2,8 +2,9 @@ import random
 import output
 import mempool
 import modification
+import os
 
-data = modification.read_file("Sim_parameters.json")
+data = modification.read_file(os.path.join(os.path.dirname(__file__), "Sim_parameters.json"))
 
 
 class Fog:
