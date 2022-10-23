@@ -1,4 +1,9 @@
 {
+  "blockchainFunction": 1,
+  "blockchainPlacement": 1,
+  "consensusAlgorithm": 1,
+  "aiAssistedMining?": false,
+  "aiAssistedMinersPercentage": 10,
   "NumOfFogNodes": 5,
   "num_of_users_per_fog_node": 5,
   "NumOfTaskPerUser": 5,
