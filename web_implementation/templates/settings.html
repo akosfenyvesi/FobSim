@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Settings{% endblock %}
+{% block head %}
+{{ super() }}
+<script type="module" src="../static/js/script.js"></script>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+{% endblock %}
+{% block content %}
+<h1>Form goes here</h1>
+{% endblock %}
