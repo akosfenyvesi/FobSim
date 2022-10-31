@@ -10,5 +10,253 @@
 </script>
 {% endblock %}
 {% block content %}
-<h1>Form goes here</h1>
+<form method="POST" action="{{ url_for('simulation') }}">
+    <fieldset>
+        <h2 class="fs-title">Settings</h2>
+
+        <div class="row mb-3">
+            <label class="col-sm-4 col-form-label" for="selectFunction">Function of the Blockchain network</label>
+            <div class="col-sm-4">
+                <select class="form-select" id="selectFunction" name="selectFunction">
+                    <option value="1" selected>Data Management</option>
+                    <option value="2">Computational services</option>
+                    <option value="3">Payment</option>
+                    <option value="4">Identity Management</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label class="col-sm-4 col-form-label" for="selectPlacement">Placement of the Blockchain network</label>
+            <div class="col-sm-4">
+                <select class="form-select" id="selectPlacement" name="selectPlacement">
+                    <option value="1" selected>Fog Layer</option>
+                    <option value="2">End-User layer</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label class="col-sm-4 col-form-label" for="selectConsensus">Consensus algorithm</label>
+            <div class="col-sm-4">
+                <select class="form-select" id="selectConsensus" name="selectConsensus">
+                    <option value="1" selected>Proof of Work (PoW)</option>
+                    <option value="2">Proof of Stake (PoS)</option>
+                    <option value="3">Proof of Authority (PoA)</option>
+                    <option value="4">Proof of Elapsed Time (PoET)</option>
+                    <option value="5">Delegated Proof of Stake (DPoS)</option>
+                    <option value="6">Example New CA</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-sm-10 offset-sm-2">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="aiAssistedMiningCheck"
+                           name="aiAssistedMiningCheck" disabled>
+                    <label class="form-check-label" for="aiAssistedMiningCheck">
+                        AI-assisted mining
+                    </label>
+                </div>
+            </div>
+        </div>
+        <input type="button" name="next" class="next btn btn-primary" value="Next"/>
+    </fieldset>
+
+    <fieldset style="display:none;">
+        <h2 class="fs-title">Set simulation parameters</h2>
+
+        <div class="row">
+            <div class="col">
+                <div class="row mb-3">
+                    <label for="NumOfFogNodes" class="col-sm-6 col-form-label">Number of fog nodes
+                        <svg data-toggle="tooltip" data-placement="top"
+                             title="Some constraints" xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                             fill="currentColor"
+                             class="bi bi-question-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                            <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                        </svg>
+                    </label>
+                    <div class="col-sm-4" data-toggle="tooltip" data-placement="top"
+                         title="Some constraints">
+                        <input type="number" class="form-control" id="NumOfFogNodes" name="NumOfFogNodes" min="1" max=""
+                               value="">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="num_of_users_per_fog_node" class="col-sm-6 col-form-label">Number of users per fog
+                        node</label>
+                    <div class="col-sm-4">
+                        <input type="number" class="form-control" id="num_of_users_per_fog_node"
+                               name="num_of_users_per_fog_node" min="1" max="" value="">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="NumOfTaskPerUser" class="col-sm-6 col-form-label">Number of task per user</label>
+                    <div class="col-sm-4">
+                        <input type="number" class="form-control" id="NumOfTaskPerUser" name="NumOfTaskPerUser" min="1" max=""
+                               value="">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="NumOfMiners" class="col-sm-6 col-form-label">Number of miners</label>
+                    <div class="col-sm-4">
+                        <input type="number" class="form-control" id="NumOfMiners" name="NumOfMiners" min="2" max="1500"
+                               value="">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="number_of_each_miner_neighbours" class="col-sm-6 col-form-label">Number of each
+                        miner
+                        neighbours</label>
+                    <div class="col-sm-4">
+                        <input type="number" class="form-control" id="number_of_each_miner_neighbours"
+                               name="number_of_each_miner_neighbours" min="1"
+                               max="1499"
+                               value="">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="numOfTXperBlock" class="col-sm-6 col-form-label">Number of tx per block</label>
+                    <div class="col-sm-4">
+                        <input type="number" class="form-control" id="numOfTXperBlock" name="numOfTXperBlock" min="1" max=""
+                               value="">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="puzzle_difficulty" class="col-sm-6 col-form-label">Puzzle difficulty</label>
+                    <div class="col-sm-4">
+                        <input type="number" class="form-control" id="puzzle_difficulty" name="puzzle_difficulty"
+                               min="1" max="64" value="">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="poet_block_time" class="col-sm-6 col-form-label">PoET block time</label>
+                    <div class="col-sm-4">
+                        <input type="number" class="form-control" id="poet_block_time" name="poet_block_time" min="1" max=""
+                               value="">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="row mb-3">
+                    <label for="Max_enduser_payment" class="col-sm-6 col-form-label">Max enduser payment</label>
+                    <div class="col-sm-4">
+                        <input type="number" class="form-control" id="Max_enduser_payment" name="Max_enduser_payment"
+                               min="1" max="" value="">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="miners_initial_wallet_value" class="col-sm-6 col-form-label">Miners initial wallet
+                        value</label>
+                    <div class="col-sm-4">
+                        <input type="number" class="form-control" id="miners_initial_wallet_value"
+                               name="miners_initial_wallet_value" min="0" value="">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="mining_award" class="col-sm-6 col-form-label">Mining award</label>
+                    <div class="col-sm-4">
+                        <input type="number" class="form-control" id="mining_award" name="mining_award" min="0"
+                               value="">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="delay_between_fog_nodes" class="col-sm-6 col-form-label">Delay between fog
+                        nodes</label>
+                    <div class="col-sm-4">
+                        <input type="number" class="form-control" id="delay_between_fog_nodes"
+                               name="delay_between_fog_nodes" min="0" value="">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="delay_between_end_users" class="col-sm-6 col-form-label">Delay between end
+                        users</label>
+                    <div class="col-sm-4">
+                        <input type="number" class="form-control" id="delay_between_end_users"
+                               name="delay_between_end_users" min="0" value="">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="Asymmetric_key_length" class="col-sm-6 col-form-label">Asymmetric key length</label>
+                    <div class="col-sm-4">
+                        <input type="number" class="form-control" id="Asymmetric_key_length"
+                               name="Asymmetric_key_length" min="1" max=""
+                               value="">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="Num_of_DPoS_delegates" class="col-sm-6 col-form-label">Num of DPoS delegates</label>
+                    <div class="col-sm-4">
+                        <input type="number" class="form-control" id="Num_of_DPoS_delegates"
+                               name="Num_of_DPoS_delegates" min="1" max=""
+                               value="">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="row mb-3">
+                        <div class="col-sm-10 offset-sm-2">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="Gossip_Activated"
+                                       name="Gossip_Activated">
+                                <label class="form-check-label" for="Gossip_Activated">
+                                    Gossip activated
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row mb-3">
+                        <div class="col-sm-10 offset-sm-2">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch"
+                                       id="Automatic_PoA_miners_authorization"
+                                       name="Automatic_PoA_miners_authorization">
+                                <label class="form-check-label" for="Automatic_PoA_miners_authorization">
+                                    Automatic PoA miners authorization
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row mb-3">
+                        <div class="col-sm-10 offset-sm-2">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch"
+                                       id="Parallel_PoW_mining" name="Parallel_PoW_mining">
+                                <label class="form-check-label" for="Parallel_PoW_mining">
+                                    Parallel PoW mining
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <input type="button" name="previous" class="previous btn btn-secondary" value="Previous"/>
+        <input type="submit" name="start" class="start btn btn-primary" value="Start"/>
+    </fieldset>
+</form>
 {% endblock %}
