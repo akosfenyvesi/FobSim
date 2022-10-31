@@ -1,4 +1,5 @@
 from flask import Flask, redirect, url_for, render_template, request, send_file, flash
+import main
 
 app = Flask(__name__)
 
@@ -13,6 +14,7 @@ def index():
 def simulation():
     if request.method == "POST":
         data = request.form
+        main.run_simulations()
         return redirect(url_for('results'))
     return render_template("settings.html")
 
