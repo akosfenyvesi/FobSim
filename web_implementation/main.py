@@ -1,3 +1,5 @@
+import sys
+
 import Fog
 import end_user
 import miner
@@ -8,48 +10,47 @@ from math import ceil
 import time
 import modification
 import new_consensus_module
+import json
+import shutil
 
-
-data = modification.read_file("Sim_parameters.json")
+data = None
+expected_chain_length = None
+trans_delay = None
+user_informed = True
 list_of_end_users = []
 fogNodes = []
 transactions_list = []
 list_of_authorized_miners = []
-blockchainFunction = data["blockchainFunction"]
-blockchainPlacement = data["blockchainPlacement"]
-type_of_consensus = data["consensusAlgorithm"]
-number_of_miner_neighbours = data["number_of_each_miner_neighbours"]
-NumOfFogNodes = data["NumOfFogNodes"]
-NumOfTaskPerUser = data["NumOfTaskPerUser"]
-NumOfMiners = data["NumOfMiners"]
-numOfTXperBlock = data["numOfTXperBlock"]
-num_of_users_per_fog_node = data["num_of_users_per_fog_node"]
-expected_chain_length = ceil((num_of_users_per_fog_node * NumOfTaskPerUser * NumOfFogNodes) / numOfTXperBlock)
-gossip_activated = data["Gossip_Activated"]
-Automatic_PoA_miners_authorization = data["Automatic_PoA_miners_authorization?"]
-Parallel_PoW_mining = data["Parallel_PoW_mining?"]
-delay_between_fog_nodes = data["delay_between_fog_nodes"]
-delay_between_end_users = data["delay_between_end_users"]
-# Check if correct
-trans_delay = delay_between_fog_nodes if blockchainPlacement == 1 else delay_between_end_users
-poet_block_time = data['poet_block_time']
-Asymmetric_key_length = data['Asymmetric_key_length']
-number_of_DPoS_delegates = data['Num_of_DPoS_delegates']
-user_informed = True
+
+
+def read_json():
+    global data, expected_chain_length, trans_delay
+
+    shutil.copyfile("static/data/Sim_parameters.json", "Sim_parameters.json")
+
+    data = modification.read_file("Sim_parameters.json")
+
+    expected_chain_length = ceil(
+        (data["num_of_users_per_fog_node"] * data["NumOfTaskPerUser"] * data["NumOfFogNodes"]) / data[
+            "numOfTXperBlock"])
+    # Check if correct
+    trans_delay = data["delay_between_fog_nodes"] if data["blockchainPlacement"] == 1 else data[
+        "delay_between_end_users"]
+    print(data)
 
 
 def initiate_files():
-    modification.initiate_files(gossip_activated)
-    new_consensus_module.prepare_necessary_files(type_of_consensus)
+    modification.initiate_files(data["Gossip_Activated"])
+    new_consensus_module.prepare_necessary_files(data["consensusAlgorithm"])
 
 
 def initiate_network():
-    for count in range(NumOfFogNodes):
+    for count in range(data["NumOfFogNodes"]):
         fogNodes.append(Fog.Fog(count + 1))
-        for p in range(num_of_users_per_fog_node):
+        for p in range(data["num_of_users_per_fog_node"]):
             list_of_end_users.append(end_user.User(p + 1, count + 1))
     output.users_and_fogs_are_up()
-    if blockchainFunction == 4:
+    if data["blockchainFunction"] == 4:
         output.GDPR_warning()
         while True:
             print("If you don't want other attributes to be added to end_users, input: done\n")
@@ -61,20 +62,21 @@ def initiate_network():
                     user.identity_added_attributes[new_attribute] = ''
                 output.user_identity_addition_reminder(len(list_of_end_users))
     for user in list_of_end_users:
-        user.create_tasks(NumOfTaskPerUser, blockchainFunction, list_of_end_users)
+        user.create_tasks(data["NumOfTaskPerUser"], data["blockchainFunction"], list_of_end_users)
         user.send_tasks(fogNodes)
-        print("End_user " + str(user.addressParent) + "." + str(user.addressSelf) + " had sent its tasks to the fog layer")
+        print("End_user " + str(user.addressParent) + "." + str(
+            user.addressSelf) + " had sent its tasks to the fog layer")
 
 
 def initiate_miners():
     the_miners_list = []
 
-    if blockchainPlacement == 1:
-        for i in range(NumOfFogNodes):
-            the_miners_list.append(miner.Miner(i + 1, trans_delay, gossip_activated))
-    if blockchainPlacement == 2:
-        for i in range(NumOfMiners):
-            the_miners_list.append(miner.Miner(i + 1, trans_delay, gossip_activated))
+    if data["blockchainPlacement"] == 1:
+        for i in range(data["NumOfFogNodes"]):
+            the_miners_list.append(miner.Miner(i + 1, trans_delay, data["Gossip_Activated"]))
+    if data["blockchainPlacement"] == 2:
+        for i in range(data["NumOfMiners"]):
+            the_miners_list.append(miner.Miner(i + 1, trans_delay, data["Gossip_Activated"]))
     for entity in the_miners_list:
         modification.write_file("temporary/" + entity.address + "_local_chain.json", {})
         miner_wallets_log_py = modification.read_file("temporary/miner_wallets_log.json")
@@ -89,9 +91,9 @@ def initiate_miners():
 def define_trans_delay(layer):
     transmission_delay = 0
     if layer == 1:
-        transmission_delay = delay_between_fog_nodes
+        transmission_delay = data["delay_between_fog_nodes"]
     if layer == 2:
-        transmission_delay = delay_between_end_users
+        transmission_delay = data["delay_between_end_users"]
     return transmission_delay
 
 
@@ -126,7 +128,7 @@ def create_components(miners_list):
     all_components = set()
     for entity in miners_list:
         component = set()
-        while len(entity.neighbours) < number_of_miner_neighbours:
+        while len(entity.neighbours) < data["number_of_each_miner_neighbours"]:
             neighbour = random.choice(miners_list).address
             if neighbour != entity.address:
                 entity.neighbours.add(neighbour)
@@ -157,13 +159,13 @@ def give_miners_authorization(the_miners_list, the_type_of_consensus):
         return wanted
     if the_type_of_consensus == 3:
         # automated approach:
-        if Automatic_PoA_miners_authorization:
+        if data["Automatic_PoA_miners_authorization?"]:
             for i in range(len(the_miners_list)):
                 the_miners_list[i].isAuthorized = True
                 list_of_authorized_miners.append(the_miners_list[i])
         else:
             # user input approach:
-            output.authorization_trigger(blockchainPlacement, NumOfFogNodes, NumOfMiners)
+            output.authorization_trigger(data["blockchainPlacement"], data["NumOfFogNodes"], data["NumOfMiners"])
             while True:
                 authorized_miner = input()
                 if authorized_miner == "done":
@@ -180,10 +182,12 @@ def initiate_genesis_block(AI_wanted):
     genesis_transactions = ["genesis_block"]
     for i in range(len(miner_list)):
         genesis_transactions.append(miner_list[i].address)
-    genesis_block = new_consensus_module.generate_new_block(genesis_transactions, 'The Network', 0, type_of_consensus, AI_wanted, False)
-    output.block_info(genesis_block, type_of_consensus)
+    genesis_block = new_consensus_module.generate_new_block(genesis_transactions, 'The Network', 0,
+                                                            data["consensusAlgorithm"], AI_wanted, False)
+    output.block_info(genesis_block, data["consensusAlgorithm"])
     for elem in miner_list:
-        elem.receive_new_block(genesis_block, type_of_consensus, miner_list, blockchainFunction, expected_chain_length)
+        elem.receive_new_block(genesis_block, data["consensusAlgorithm"], miner_list, data["blockchainFunction"],
+                               expected_chain_length)
     output.genesis_block_generation()
 
 
@@ -197,12 +201,12 @@ def send_tasks_to_BC():
 
 def store_fog_data():
     for node in fogNodes:
-        log = open('temporary/Fog_node_'+str(node.address)+'.txt', 'w')
+        log = open('temporary/Fog_node_' + str(node.address) + '.txt', 'w')
         log.write(str(node.local_storage))
 
 
 def inform_miners_of_users_wallets():
-    if blockchainFunction == 3:
+    if data["blockchainFunction"] == 3:
         user_wallets = {}
         for user in list_of_end_users:
             wallet_info = {'parent': user.addressParent,
@@ -215,20 +219,24 @@ def inform_miners_of_users_wallets():
 
 def run_simulations():
     global miner_list, expected_chain_length
+    read_json()
     initiate_files()
     initiate_network()
     miner_list = initiate_miners()
-    AI_assisted_mining_wanted = give_miners_authorization(miner_list, type_of_consensus)
+    AI_assisted_mining_wanted = give_miners_authorization(miner_list, data["consensusAlgorithm"])
     inform_miners_of_users_wallets()
-    blockchain.stake(miner_list, type_of_consensus)
+    blockchain.stake(miner_list, data["consensusAlgorithm"])
     initiate_genesis_block(AI_assisted_mining_wanted)
     send_tasks_to_BC()
     time_start = time.time()
-    if blockchainFunction == 2:
-        expected_chain_length = ceil((num_of_users_per_fog_node * NumOfTaskPerUser * NumOfFogNodes))
-    new_consensus_module.miners_trigger(miner_list, type_of_consensus, expected_chain_length, Parallel_PoW_mining,
-                                        numOfTXperBlock, blockchainFunction, poet_block_time, Asymmetric_key_length,
-                                        number_of_DPoS_delegates, AI_assisted_mining_wanted)
+    if data["blockchainFunction"] == 2:
+        expected_chain_length = ceil(
+            (data["num_of_users_per_fog_node"] * data["NumOfTaskPerUser"] * data["NumOfFogNodes"]))
+    new_consensus_module.miners_trigger(miner_list, data["consensusAlgorithm"], expected_chain_length,
+                                        data["Parallel_PoW_mining?"],
+                                        data["numOfTXperBlock"], data["blockchainFunction"], data['poet_block_time'],
+                                        data['Asymmetric_key_length'],
+                                        data['Num_of_DPoS_delegates'], AI_assisted_mining_wanted)
 
     blockchain.award_winning_miners(len(miner_list), miner_list)
     blockchain.fork_analysis(miner_list)
@@ -237,6 +245,6 @@ def run_simulations():
     elapsed_time = time.time() - time_start
     print("elapsed time = " + str(elapsed_time) + " seconds")
 
+
 if __name__ == '__main__':
     pass
-
