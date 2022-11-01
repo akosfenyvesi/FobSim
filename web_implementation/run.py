@@ -16,11 +16,11 @@ def index():
 def simulation():
     if request.method == "POST":
         tmp = sys.stdout
-        my_result = StringIO()
-        sys.stdout = my_result
+        output_results = StringIO()
+        sys.stdout = output_results
         main.run_simulations()
         sys.stdout = tmp
-        return redirect(url_for('results'))
+        return render_template("results.html", results=output_results.getvalue())
     return render_template("settings.html")
 
 
