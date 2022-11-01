@@ -36,7 +36,6 @@ def read_json():
     # Check if correct
     trans_delay = data["delay_between_fog_nodes"] if data["blockchainPlacement"] == 1 else data[
         "delay_between_end_users"]
-    print(data)
 
 
 def initiate_files():
