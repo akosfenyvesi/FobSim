@@ -1,6 +1,7 @@
 from flask import Flask, redirect, url_for, render_template, request, send_file, flash
 import main
-import contextlib
+from io import StringIO
+import sys
 
 app = Flask(__name__)
 
@@ -14,9 +15,11 @@ def index():
 @app.route("/simulation", methods=["POST", "GET"])
 def simulation():
     if request.method == "POST":
-        with open("output.txt", 'w') as f:
-            with contextlib.redirect_stdout(f):
-                main.run_simulations()
+        tmp = sys.stdout
+        my_result = StringIO()
+        sys.stdout = my_result
+        main.run_simulations()
+        sys.stdout = tmp
         return redirect(url_for('results'))
     return render_template("settings.html")
 
