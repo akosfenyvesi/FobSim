@@ -10,7 +10,7 @@
 </script>
 {% endblock %}
 {% block content %}
-<form method="POST" action="{{ url_for('simulation') }}">
+<form method="POST" action="{{ url_for('simulation') }}" class="needs-validation" novalidate>
     <fieldset>
         <h2 class="fs-title">Settings</h2>
 
@@ -72,7 +72,7 @@
                 <div class="row mb-3">
                     <label for="NumOfFogNodes" class="col-sm-6 col-form-label">Number of fog nodes
                         <svg data-toggle="tooltip" data-placement="top"
-                             title="Some constraints" xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                             title="Must be at least 1" xmlns="http://www.w3.org/2000/svg" width="12" height="12"
                              fill="currentColor"
                              class="bi bi-question-circle" viewBox="0 0 16 16">
                             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
@@ -80,9 +80,12 @@
                         </svg>
                     </label>
                     <div class="col-sm-4" data-toggle="tooltip" data-placement="top"
-                         title="Some constraints">
+                         title="Must be at least 1">
                         <input type="number" class="form-control" id="NumOfFogNodes" name="NumOfFogNodes" min="1" max=""
-                               value="">
+                               value="" required>
+                        <div class="invalid-feedback">
+                            The number of fog nodes must be at least 1!
+                        </div>
                     </div>
                 </div>
 
@@ -98,7 +101,8 @@
                 <div class="row mb-3">
                     <label for="NumOfTaskPerUser" class="col-sm-6 col-form-label">Number of task per user</label>
                     <div class="col-sm-4">
-                        <input type="number" class="form-control" id="NumOfTaskPerUser" name="NumOfTaskPerUser" min="1" max=""
+                        <input type="number" class="form-control" id="NumOfTaskPerUser" name="NumOfTaskPerUser" min="1"
+                               max=""
                                value="">
                     </div>
                 </div>
@@ -126,7 +130,8 @@
                 <div class="row mb-3">
                     <label for="numOfTXperBlock" class="col-sm-6 col-form-label">Number of tx per block</label>
                     <div class="col-sm-4">
-                        <input type="number" class="form-control" id="numOfTXperBlock" name="numOfTXperBlock" min="1" max=""
+                        <input type="number" class="form-control" id="numOfTXperBlock" name="numOfTXperBlock" min="1"
+                               max=""
                                value="">
                     </div>
                 </div>
@@ -142,7 +147,8 @@
                 <div class="row mb-3">
                     <label for="poet_block_time" class="col-sm-6 col-form-label">PoET block time</label>
                     <div class="col-sm-4">
-                        <input type="number" class="form-control" id="poet_block_time" name="poet_block_time" min="1" max=""
+                        <input type="number" class="form-control" id="poet_block_time" name="poet_block_time" min="1"
+                               max=""
                                value="">
                     </div>
                 </div>
@@ -250,6 +256,33 @@
                                 </label>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
+            Simulate graph
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% include 'graph_test.html' %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>
