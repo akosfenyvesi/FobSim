@@ -1,5 +1,58 @@
 {% extends 'base.html' %}
 {% block title %}Home{% endblock %}
 {% block content %}
-<h1>Some stuff goes here for sure</h1>
+<h1>FobSim</h1>
+
+<p>This project aims to introduce a reliable Fog-enhanced Blockchain simulation environment, namely FoBSim.</p>
+
+<p>This environment shall facilitate easy simulation for different Fog-Blockchain integration scenarios.</p>
+
+<p>FoBSim is implemented using Python 3.8, and it is adviced to be run on Linux or Windows OS.</p>
+
+<p>This research work is a part of a paper that is published in the PeerJ-Computer Science journal. The open-access
+    paper can be found at <a href="https://peerj.com/articles/cs-431/" rel="noopener noreferrer" target="_blank">PeerJ</a> (DOI: 10.7717/peerj-cs.431).</p>
+
+<p>Full tutorial on <a href="https://youtube.com/playlist?list=PLpRuKQ4GtoaMnRw8J31a_2EuuCYpBQGxS" rel="noopener noreferrer" target="_blank">Youtube</a>
+</p>
+
+<p>IMPORTANT NOTE: Published code should be considered copyrighted whether or not it includes an explicit copyright
+    notice. This means that no one can distribute, reproduce, display, or create derivative works of the software, for
+    commercial purposes, without permission of the copyright owner. Nevertheless, permission is granted for reproducing
+    and creating derivative works for noncommercial activities (e.g. Research), given that appropriate crediting is
+    provided, and changes that were made were indicated. You may do so in any reasonable manner, but not in any way that
+    suggests the licensor endorses you or your use.</p>
+</p>
+
+<h1>FoBSim allows the placement of the Blockchain network in either:</h1>
+<ol>
+    <li>The Fog layer</li>
+    <li>The End-User layer</li>
+</ol>
+
+<h1>The Blockchain in FoBSim provides the following services/immutable distributed ledgers:</h1>
+<ol>
+    <li>Payment/Trading</li>
+    <li>Data management</li>
+    <li>Identity management</li>
+    <li>Computational Services through Smart Contracts</li>
+</ol>
+
+<h1>The Blockchain in FoBSim allows the use of one of the following Consensus algorithms during each run:</h1>
+<ol>
+    <li>Proof-of-Work (PoW)</li>
+    <li>Proof-of-Stake (PoS)</li>
+    <li>Proof-of-Authority (PoA)</li>
+    <li>NEW: Proof-of-Elapsed-Time (PoET)</li>
+    <li>NEW: delegated Proof-of-Stack (dPoS)</li>
+</ol>
+
+<h1>Steps to add a new consensus algorithm (proof-based):</h1>
+<ol start="0">
+    <li>You must be familiar with Python language.</li>
+    <li>In the 'new_consensus_module.py', there are two groups of functions: Modifiable and Non-Modifiable (declared by comments).</li>
+    <li>In the Modifiable part, follow the seven steps declared in the comments. Make sure to add instead of modify on the modifiable part. Thus, other code related to other consensus algorithms is not affected.</li>
+    <li>As an example, we added a 'dummy consensus algorithm' which clarifies the main parts that should be added for a new proof-based algorithm. You can perform the same steps.</li>
+    <li>Additional functionalities can be added "if necessary" to any other module in the tool so that the proposed consensus algorithm works smoothly. For example, we added some conditional statements related to PoET to the 'build_block' method in the 'miner.py' file, and we added a 'PoET_server.py' (which includes only one method only) to forbid any confusions. However, we could simply add this method to the 'new_consensus_module.py'. Read the functions of all the available 5 consensus algorithms so that you get your self familiar of how a proof-based algorithm works.</li>
+    <li>Run the FoBSim tool after modifying on the 'Sim_parameters.json' file as required by your simulation scenario (steps 3 and 4 above ^^)</li>
+</ol>
 {% endblock %}
