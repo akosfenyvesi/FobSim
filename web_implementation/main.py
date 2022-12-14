@@ -1,3 +1,4 @@
+import gc
 import sys
 
 import Fog
@@ -110,11 +111,10 @@ def bridging(bridges, miners_list):
     while len(bridges) != 1:
         bridge = random.choice(tuple(bridges))
         other_bridge = random.choice(tuple(bridges))
-        same_bridge = True
-        while same_bridge:
+
+        while bridge == other_bridge:
             other_bridge = random.choice(tuple(bridges))
-            if other_bridge != bridge:
-                same_bridge = False
+
         for entity in miners_list:
             if entity.address == bridge:
                 entity.neighbours.add(other_bridge)
