@@ -5,3 +5,14 @@
 .number {
     color: #f78c6c;
 }
+
+#graph-container {
+    text-align: center;
+}
+
+#mynetwork {
+    width: 90%;
+    height: 500px;
+    border: 1px solid lightgray;
+    display: inline-block;
+}
