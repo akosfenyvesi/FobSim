@@ -52,9 +52,9 @@ def simulation():
     return render_template("settings.html")
 
 
-@app.route("/test")
-def test():
-    return render_template("graph.html")
+# @app.route("/test")
+# def test():
+#     return render_template("graph_modal.html")
 
 
 @app.route("/results")
