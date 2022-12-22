@@ -1,11 +1,8 @@
-import json
 import re
 import subprocess
 
 from flask import Flask, redirect, url_for, render_template, request, send_file, flash
 from markupsafe import Markup
-import main
-from io import StringIO
 import sys
 import os
 
@@ -25,54 +22,26 @@ def read_files(files):
             json_data = fp.read()
             json_data = Markup(re.sub(
                 r'(\"(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\\"])*\"(\s*:\s*)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)',
-                lambda match: '<span class="{}">{}</span>'.format(
-                    "number" if match.group(0).isdigit() else "string", match.group(0)
-                ),
-                json_data
-            ))
+                lambda
+                    match: f'<span class="{"number" if match.group(0).isdigit() else "string"}">{match.group(0)}</span>',
+                json_data))
+
             contents.append(json_data)
     return contents
-
-
-
-# @app.route("/simulation", methods=["POST", "GET"])
-# def simulation():
-#     if request.method == "POST":
-#         data = request.form
-#         print(data)
-#         tmp = sys.stdout
-#         output_results = StringIO()
-#         sys.stdout = output_results
-#         main.run_simulations()
-#         sys.stdout = tmp
-#         files = os.listdir("temporary")
-#         contents = read_files(files)
-#         print(contents)
-#         return render_template("results.html", results=output_results.getvalue(), len=len(files), files=files,
-#                                contents=contents)
-#     return render_template("settings.html")
 
 
 @app.route("/simulation", methods=["POST", "GET"])
 def simulation():
     if request.method == "POST":
         data = request.form
-        print(data)
         p = subprocess.Popen([sys.executable or 'python', "../main.py"], stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE)
         output_results, err = p.communicate(input=b"1\n2\n1\nn\n\n")
-        print(output_results)
         files = os.listdir("temporary")
         contents = read_files(files)
-        print(contents)
         return render_template("results.html", results=output_results.decode("utf-8"), len=len(files), files=files,
                                contents=contents)
     return render_template("settings.html")
-
-
-# @app.route("/test")
-# def test():
-#     return render_template("graph_modal.html")
 
 
 @app.route("/results")
@@ -96,4 +65,5 @@ def page_not_found(e):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0")
+    # app.run(debug=True, host="0.0.0.0")
+    app.run(debug=True)
