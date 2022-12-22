@@ -1,5 +1,6 @@
 import json
 import re
+import subprocess
 
 from flask import Flask, redirect, url_for, render_template, request, send_file, flash
 from markupsafe import Markup
@@ -7,7 +8,6 @@ import main
 from io import StringIO
 import sys
 import os
-
 
 app = Flask(__name__)
 
@@ -34,20 +34,38 @@ def read_files(files):
     return contents
 
 
+
+# @app.route("/simulation", methods=["POST", "GET"])
+# def simulation():
+#     if request.method == "POST":
+#         data = request.form
+#         print(data)
+#         tmp = sys.stdout
+#         output_results = StringIO()
+#         sys.stdout = output_results
+#         main.run_simulations()
+#         sys.stdout = tmp
+#         files = os.listdir("temporary")
+#         contents = read_files(files)
+#         print(contents)
+#         return render_template("results.html", results=output_results.getvalue(), len=len(files), files=files,
+#                                contents=contents)
+#     return render_template("settings.html")
+
+
 @app.route("/simulation", methods=["POST", "GET"])
 def simulation():
     if request.method == "POST":
         data = request.form
         print(data)
-        tmp = sys.stdout
-        output_results = StringIO()
-        sys.stdout = output_results
-        main.run_simulations()
-        sys.stdout = tmp
+        p = subprocess.Popen([sys.executable or 'python', "../main.py"], stdin=subprocess.PIPE,
+                             stdout=subprocess.PIPE)
+        output_results, err = p.communicate(input=b"1\n2\n1\nn\n\n")
+        print(output_results)
         files = os.listdir("temporary")
         contents = read_files(files)
         print(contents)
-        return render_template("results.html", results=output_results.getvalue(), len=len(files), files=files,
+        return render_template("results.html", results=output_results.decode("utf-8"), len=len(files), files=files,
                                contents=contents)
     return render_template("settings.html")
 
@@ -78,4 +96,4 @@ def page_not_found(e):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")
