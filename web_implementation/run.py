@@ -36,7 +36,9 @@ def simulation():
         data = request.form
         p = subprocess.Popen([sys.executable or 'python', "../main.py"], stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE)
-        output_results, err = p.communicate(input=b"1\n2\n1\nn\n\n")
+        output_results, err = p.communicate(
+            input=f"{data['selectFunction']}\n{data['selectPlacement']}\n{data['selectConsensus']}\nn\n\n".encode(
+                'ASCII'))
         files = os.listdir("temporary")
         contents = read_files(files)
         return render_template("results.html", results=output_results.decode("utf-8"), len=len(files), files=files,
