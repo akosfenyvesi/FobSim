@@ -39,9 +39,14 @@ def simulation():
         output_results, err = p.communicate(
             input=f"{data['selectFunction']}\n{data['selectPlacement']}\n{data['selectConsensus']}\nn\n\n".encode(
                 'ASCII'))
+
         files = os.listdir("temporary")
         contents = read_files(files)
-        return render_template("results.html", results=output_results.decode("utf-8"), len=len(files), files=files,
+
+        output_results_index = output_results.decode("utf-8").find("*****************")
+        output_results_sliced = output_results.decode("utf-8")[output_results_index + len("*****************"):]
+
+        return render_template("results.html", results=output_results_sliced, len=len(files), files=files,
                                contents=contents)
     return render_template("settings.html")
 
